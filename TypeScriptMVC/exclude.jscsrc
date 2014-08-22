@@ -1,0 +1,8 @@
+﻿{
+    "disallowCommaBeforeLineBreak": null,
+    "disallowDanglingUnderscores": false,
+    "disallowEmptyBlocks": false,
+    "disallowImplicitTypeConversion": [ ],
+    "disallowKeywordsOnNewLine": [ ],
+    "disallowKeywords": [ "with" ]
+}

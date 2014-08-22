@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{76E33FDC-CFB1-4F48-8A56-2A1F1F94BE00}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Content\qunit-theme.css" />
+    <Content Include="Content\qunit.css" />
+    <Content Include="Binding\Knockout.js" />
+    <Content Include="index.html" />
+    <None Include="Scripts\_references.js" />
+    <Content Include="Testing\Framework\blanket.js" />
+    <Content Include="Testing\Core\CoreTest.js" />
+    <Content Include="Testing\Core\ExceptionsTest.js" />
+    <Content Include="Testing\Framework\Framework.js">
+      <DependentUpon>Framework.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Testing\Framework\Framework.min.js">
+      <DependentUpon>Framework.js</DependentUpon>
+    </Content>
+    <Content Include="Testing\Framework\qunit.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Testing\Root\ApplicationTest.js" />
+    <Content Include="Testing\Routing\RouteDataTest.js" />
+    <Content Include="Testing\Routing\RouteDefinitionTest.js" />
+    <Content Include="Testing\Testing.js">
+      <DependentUpon>Testing.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Application.ts" />
+    <TypeScriptCompile Include="Binding\ModelBinder.ts" />
+    <TypeScriptCompile Include="Context\ControllerContext.ts" />
+    <TypeScriptCompile Include="Context\RequestContext.ts" />
+    <TypeScriptCompile Include="Context\ViewContext.ts" />
+    <TypeScriptCompile Include="Context\WindowContext.ts" />
+    <TypeScriptCompile Include="Controller.ts" />
+    <TypeScriptCompile Include="Core\AjaxRequest.ts" />
+    <TypeScriptCompile Include="Core\Browser.ts" />
+    <TypeScriptCompile Include="Core\Collections.ts" />
+    <TypeScriptCompile Include="Core\Context.ts" />
+    <TypeScriptCompile Include="Core\Core.ts" />
+    <TypeScriptCompile Include="Core\Dictionary.ts" />
+    <TypeScriptCompile Include="Binding\Knockout.d.ts" />
+    <TypeScriptCompile Include="Core\Parsing.ts" />
+    <TypeScriptCompile Include="AppConfig.ts" />
+    <TypeScriptCompile Include="Results\ActionResult.ts" />
+    <TypeScriptCompile Include="Results\ViewResult.ts" />
+    <TypeScriptCompile Include="Routing\ControllerLocator.ts" />
+    <TypeScriptCompile Include="Routing\ControllerRegistry.ts" />
+    <TypeScriptCompile Include="Routing\HashWatcher.ts" />
+    <TypeScriptCompile Include="Routing\RouteData.ts" />
+    <TypeScriptCompile Include="Core\StackTrace.ts" />
+    <TypeScriptCompile Include="Routing\RouteDefinition.ts" />
+    <TypeScriptCompile Include="Routing\Router.ts" />
+    <TypeScriptCompile Include="Testing\Framework\MockApplication.ts" />
+    <TypeScriptCompile Include="Testing\Framework\MockController.ts" />
+    <TypeScriptCompile Include="Testing\Framework\MockView.ts" />
+    <TypeScriptCompile Include="Testing\Framework\MockViewModel.ts" />
+    <TypeScriptCompile Include="View\View.ts" />
+    <TypeScriptCompile Include="View\DataDictionary.ts" />
+    <TypeScriptCompile Include="View\ViewModel.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="exclude.jscsrc" />
+    <Content Include="Testing\Testing.js.bundle" />
+    <Content Include="Testing\Framework\Framework.js.bundle" />
+    <Content Include="Testing\Framework\Framework.min.js.map">
+      <DependentUpon>Framework.min.js</DependentUpon>
+    </Content>
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>TypeScriptMVC</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>63751</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:63751/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptModuleKind>commonjs</TypeScriptModuleKind>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>
