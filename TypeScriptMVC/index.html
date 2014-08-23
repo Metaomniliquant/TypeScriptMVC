@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>MVC Tests</title>
+    <link rel="stylesheet" href="Content/qunit.css" type="text/css" />
+    <link rel="stylesheet" href="Content/qunit-theme.css" type="text/css" />
+
+    <!-- TESTABLES -->
+    <script type="text/javascript" src="Core/StackTrace.js" data-cover></script>
+    <script type="text/javascript" src="Core/Core.js" data-cover></script>
+    <script type="text/javascript" src="Core/Parsing.js" data-cover></script>
+    <script type="text/javascript" src="Core/Context.js" data-cover></script>
+    <script type="text/javascript" src="Core/Browser.js" data-cover></script>
+    <script type="text/javascript" src="Core/Collections.js" data-cover></script>
+    <script type="text/javascript" src="Core/Dictionary.js" data-cover></script>
+
+    <script type="text/javascript" src="Context/WindowContext.js" data-cover></script>
+    <script type="text/javascript" src="Context/RequestContext.js" data-cover></script>
+    <script type="text/javascript" src="Context/ControllerContext.js" data-cover></script>
+    <script type="text/javascript" src="Context/ViewContext.js" data-cover></script>
+
+    <script type="text/javascript" src="Binding/Knockout.js"></script>
+    <script type="text/javascript" src="Binding/ModelBinder.js"></script>
+
+    <script type="text/javascript" src="Routing/RouteData.js" data-cover></script>
+    <script type="text/javascript" src="Routing/RouteDefinition.js" data-cover></script>
+    <script type="text/javascript" src="Routing/ControllerRegistry.js" data-cover></script>
+    <script type="text/javascript" src="Routing/ControllerLocator.js" ></script>
+    <script type="text/javascript" src="Routing/HashWatcher.js" data-cover></script>
+    <script type="text/javascript" src="Routing/Router.js" ></script>
+
+    <script type="text/javascript" src="View/DataDictionary.js" data-cover></script>
+    <script type="text/javascript" src="View/View.js" data-cover></script>
+    <script type="text/javascript" src="View/ViewModel.js" data-cover></script>
+
+    <script type="text/javascript" src="Results/ActionResult.js" data-cover></script>
+    <script type="text/javascript" src="Results/ViewResult.js" data-cover></script>
+
+    <script type="text/javascript" src="Controller.js" data-cover></script>
+    <script type="text/javascript" src="Application.js" data-cover></script>
+
+    <!-- FRAMEWORK -->
+    <script type="text/javascript" src="Testing/Framework/Framework.js"></script>
+
+</head>
+<body onload="InitCustom()">
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+
+    <!-- TESTS -->
+    <script type="text/javascript" src="/Testing/Testing.js"></script>
+
+    <script type="text/javascript">
+        function InitCustom() {
+
+            /// <reference path="/Testing/blanket.js" />
+            var original = _blanket.onTestsDone;
+            _blanket.onTestsDone = function () {
+                original.apply(_blanket, Array.prototype.slice.call(arguments));
+
+                var blanket = document.querySelector(".bl-title");
+                var main = document.querySelector("#blanket-main");
+
+                if (blanket) {
+                    main.style.position = "absolute";
+                    main.style.top = "14px";
+                    main.style.right = "14px";
+                    main.style.width = "830px";
+                    main.style["border-radius"] = "5px 5px 0 0";
+
+                    blanket.onclick = function () {
+                        var errors = document.querySelectorAll(".blanket.bl-error");
+                        var succes = document.querySelectorAll(".blanket.bl-success");
+
+                        for (var i = 0; i < errors.length; i++) {
+                            var error = errors[i];
+
+                            if (error) {
+                                error.style.display = error.style.display === "none" ? "block" : "none";
+                            }
+                        }
+
+                        for (var i = 0; i < succes.length; i++) {
+                            var suc = succes[i];
+
+                            if (suc) {
+                                suc.style.display = suc.style.display === "none" ? "block" : "none";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
