@@ -2,18 +2,18 @@
 
 **TypeScriptMVC** is an MVC implementation written in [TypeScript](http://www.typescriptlang.org/). The original goal of this framework is to provide a strongly typed MVC framework that generally reads like [ASP.Net MVC](http://www.asp.net/mvc/mvc5).
 
-<div style="font-size: 70%">
-**VERSIONS**
+<div style="font-weight:bold; font-size: 70%">
+VERSIONS
 </div>
 
 <div style="font-size: 70%;">
   <ul>
-  	<li><span>*TypeScriptMVC Version 1.0 <span>**(Development Stage)**</span>*</span></li>
+  	<li><span style="font-style: italic;">TypeScriptMVC Version 1.0 <span style="font-weight:bold;">(Development Stage)</span></span></li>
   </ul>
 </div>
 
-<div style="font-size: 70%">
-* **Note: TypeScriptMVC Version 1.0 is currently under development. Any code and explanations provided are subject to change and is not guaranteed to be accurate upon the time of reading. When Version 1.0 is released, official documentation will be provided.*
+<div style="font-size: 70%; font-style:italic;">
+**Note: TypeScriptMVC Version 1.0 is currently under development. Any code and explanations provided are subject to change and is not guaranteed to be accurate upon the time of reading. When Version 1.0 is released, official documentation will be provided.
 </div>
 
 
