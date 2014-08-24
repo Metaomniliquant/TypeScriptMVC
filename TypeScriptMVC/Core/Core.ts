@@ -193,8 +193,8 @@ module MVC {
         export function IsNull(arg: any): boolean {
             return arg === undefined || arg === null;
         }
-        export function IsNotNull(arg: any, argString: string): void {
-            if (arg === null || arg === undefined) {
+        export function IsNotNull(arg: any, argString: string, allowEmpty: boolean = true): void {
+            if ((arg === null || arg === undefined) || (allowEmpty !== true && arg === "")) {
                 throw new ArgumentNullException(argString);
             }
         }

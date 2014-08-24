@@ -15,11 +15,16 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Demo\app.html" />
     <Content Include="Content\qunit-theme.css" />
     <Content Include="Content\qunit.css" />
     <Content Include="Binding\Knockout.js" />
+    <Content Include="Demo\Content\demo.css" />
+    <Content Include="Demo\Templates\Home\Index.html" />
     <Content Include="index.html" />
     <None Include="Scripts\_references.js" />
     <Content Include="Testing\Framework\blanket.js" />
@@ -61,6 +66,10 @@
     <TypeScriptCompile Include="Binding\Knockout.d.ts" />
     <TypeScriptCompile Include="Core\Parsing.ts" />
     <TypeScriptCompile Include="AppConfig.ts" />
+    <TypeScriptCompile Include="Demo\Controllers\HomeController.ts" />
+    <TypeScriptCompile Include="Demo\DemoApplication.ts" />
+    <TypeScriptCompile Include="Demo\ViewModels\NameDescriptionViewModel.ts" />
+    <TypeScriptCompile Include="Demo\Views\BaseView.ts" />
     <TypeScriptCompile Include="Results\ActionResult.ts" />
     <TypeScriptCompile Include="Results\ViewResult.ts" />
     <TypeScriptCompile Include="Routing\ControllerLocator.ts" />
@@ -139,4 +148,11 @@
     <TypeScriptModuleKind>commonjs</TypeScriptModuleKind>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TypeScript MVC Demo</title>
+    <link href="Content/demo.css" rel="stylesheet" async />
+</head>
+<body>
+    <div class="app">
+        
+    </div>
+</body>
+</html>
+<!-- MVC -->
+<script type="text/javascript" src="../Core/StackTrace.js"></script>
+<script type="text/javascript" src="../Core/Core.js"></script>
+<script type="text/javascript" src="../Core/AjaxRequest.js"></script>
+<script type="text/javascript" src="../Core/Parsing.js"></script>
+<script type="text/javascript" src="../Core/Context.js"></script>
+<script type="text/javascript" src="../Core/Browser.js"></script>
+<script type="text/javascript" src="../Core/Collections.js"></script>
+<script type="text/javascript" src="../Core/Dictionary.js"></script>
+
+<script type="text/javascript" src="../Context/WindowContext.js"></script>
+<script type="text/javascript" src="../Context/RequestContext.js"></script>
+<script type="text/javascript" src="../Context/ControllerContext.js"></script>
+<script type="text/javascript" src="../Context/ViewContext.js"></script>
+
+<script type="text/javascript" src="../Binding/Knockout.js"></script>
+<script type="text/javascript" src="../Binding/ModelBinder.js"></script>
+
+<script type="text/javascript" src="../Routing/RouteData.js"></script>
+<script type="text/javascript" src="../Routing/RouteDefinition.js"></script>
+<script type="text/javascript" src="../Routing/ControllerRegistry.js"></script>
+<script type="text/javascript" src="../Routing/ControllerLocator.js"></script>
+<script type="text/javascript" src="../Routing/HashWatcher.js"></script>
+<script type="text/javascript" src="../Routing/Router.js"></script>
+
+<script type="text/javascript" src="../View/DataDictionary.js"></script>
+<script type="text/javascript" src="../View/View.js"></script>
+<script type="text/javascript" src="../View/ViewModel.js"></script>
+
+<script type="text/javascript" src="../Results/ActionResult.js"></script>
+<script type="text/javascript" src="../Results/ViewResult.js"></script>
+
+<script type="text/javascript" src="../Controller.js"></script>
+<script type="text/javascript" src="../AppConfig.js"></script>
+<script type="text/javascript" src="../Application.js"></script>
+
+<!-- APPLICATION -->
+<script type="text/javascript" src="Views/BaseView.js"></script>
+<script type="text/javascript" src="Views/Home/IndexView.js"></script>
+<script type="text/javascript" src="ViewModels/Home/IndexViewModel.js"></script>
+<script type="text/javascript" src="DemoApplication.js"></script>
+<script type="text/javascript" src="Controllers/HomeController.js"></script>
+
+<script type="text/javascript">
+    MVC.Application.Run(new Demo.DemoApplication());
+</script>

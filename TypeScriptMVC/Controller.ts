@@ -7,21 +7,20 @@ module MVC {
     export interface IController {
         ViewData: ViewDataDictionary;
         ApplicationIdentifier: string;
+        FullControllerName: string;
+        Name: string;
     }
 
     export class ControllerBase extends CoreObject implements IController {
         private viewData: ViewDataDictionary;
-        private applicationIdentifier: string;
 
-        public constructor(controllerName: string, applicationIdentifier: string) {
+        public constructor(private controllerName: string, private applicationIdentifier: string) {
             super();
 
-            Args.IsNotNull(controllerName, "controllerName");
-            Args.IsNotNull(applicationIdentifier, "applicationIdentifier");
+            Args.IsNotNull(this.controllerName, "controllerName");
+            Args.IsNotNull(this.applicationIdentifier, "applicationIdentifier");
 
-            this.applicationIdentifier = applicationIdentifier;
-
-            Application.Instance(applicationIdentifier).RegisterController(this, controllerName);
+            Application.Instance(this.applicationIdentifier).RegisterController(this, controllerName);
 
             this.viewData = new ViewDataDictionary();
         }
@@ -33,6 +32,15 @@ module MVC {
         public get ApplicationIdentifier(): string {
             return this.applicationIdentifier;
         }
+
+        public get FullControllerName(): string {
+            return this.controllerName;
+        }
+
+        public get Name(): string {
+            return this.controllerName.split("Controller")[0];
+        }
+
     }
 
     export class Controller extends ControllerBase {
@@ -40,8 +48,49 @@ module MVC {
             super(controllerName, applicationIdentifier);
         }
 
-        public View(viewModel: IViewModel): IActionResult {
-            return new ViewResult(viewModel.View, this.ViewData);
+        public View(actionViewModel: any, viewModelController?: any, viewModel?: MVC.IViewModel): IActionResult {
+            var typeofActionViewModel: string = typeof actionViewModel,
+                typeofViewModelController: string = typeof viewModelController,
+                typeofViewModel: string = typeof viewModel,
+                view: IView = null;
+
+            Args.IsNotNull(actionViewModel, "actionViewModel");
+
+            if (typeofActionViewModel === "string") {
+                if (typeofViewModelController === "string") {
+                    if (!Args.IsNull(typeofViewModel)) {
+                        // handle action, controller, viewmodel
+                        viewModel.View = new View(ViewBase
+                            .GetHtmlString(
+                                viewModelController,
+                                "{0}/{0}.html".replace("{0}", actionViewModel)));
+                        return new ViewResult(viewModel.View, this.ViewData);
+                    } else {
+                        // handle action, controller
+                        view = new View(ViewBase
+                            .GetHtmlString(
+                                viewModelController,
+                                "{0}/{0}.html".replace("{0}", actionViewModel)));
+                        return new ViewResult(view, this.ViewData);
+                    }
+                } else if (!Args.IsNull(typeofViewModelController)) {
+                    // handle action, viewmodel
+                    view = new View(ViewBase.GetHtmlString(this.Name, "{0}/{0}.html".replace("{0}", actionViewModel)));
+                    viewModelController.View = view;
+                    return new ViewResult(viewModelController.View, this.ViewData);
+                } else {
+                    // handle action
+                    view = new View(ViewBase.GetHtmlString(this.Name, "{0}/{0}.html".replace("{0}", actionViewModel)));
+                    return new ViewResult(view, this.ViewData);
+                }
+            } else if (!Args.IsNull(actionViewModel)) {
+                // handle viewModel
+                return new ViewResult(actionViewModel.View, this.ViewData);
+            } else {
+                // handle error
+                throw new ArgumentException("actionViewModel",
+                    "Cannot find action. The {0} parameter needs to be set to an action name or MVC.IViewModel instance.");
+            }
         }
     }
 }

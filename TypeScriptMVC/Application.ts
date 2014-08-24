@@ -34,6 +34,7 @@ module MVC {
     }
 
     export class ApplicationBase extends CoreObject implements IApplication {
+        private uniqueIdentifier: string;
         private static applications: IDictionary<string, IApplicationInitializer> = new Dictionary<string, IApplicationInitializer>();
         private router: IRouter;
         private root: IView;
@@ -41,8 +42,10 @@ module MVC {
         private controllers: ICollection<IController>;
         private context: IContext;
         private controllerLocator: IControllerLocator;
-        public constructor(private uniqueIdentifier: string, private config: IAppConfig) {
+        public constructor(private config: IAppConfig) {
             super();
+
+            this.uniqueIdentifier = this.config.UniqueIdentifier;
 
             var requestContext: IRequestContext = new RequestContext();
             this.router = new Router(requestContext);

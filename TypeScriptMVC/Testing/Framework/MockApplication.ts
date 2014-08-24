@@ -3,7 +3,7 @@
 module Mock {
     "use strict";
 
-    export class AppConfig implements MVC.IAppConfig {
+    export class AppConfig extends MVC.AppConfigBase {
         public get DefaultAction(): string {
             return "Index";
         }
@@ -17,7 +17,7 @@ module Mock {
 
     export class MockApplication extends MVC.Application {
         public constructor() {
-            super("MockApplication", new AppConfig());
+            super(new AppConfig());
 
             var elem: HTMLElement = document.getElementById("qunit-fixture");
 

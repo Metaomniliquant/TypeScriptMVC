@@ -6,18 +6,24 @@ module MVC {
     export interface IAjaxRequestItem {
         Data: any;
         Method: string;
+        Async: boolean;
+        ContentType: string;
         Handler: (xhr: XMLHttpRequest) => void;
     }
 
     export interface IAjaxRequest {
         XHR: XMLHttpRequest;
         Updating: boolean;
-        Send: (data: any, method: string, handler: (xhr: XMLHttpRequest) => void) => IAjaxRequest;
+        Send: (data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void) => IAjaxRequest;
         Timestamp: Date;
     }
 
     export class AjaxRequestItemBase extends CoreObject implements IAjaxRequestItem {
-        public constructor(private data?: any, private method?: string, private handler?: (xhr: XMLHttpRequest) => void) {
+        public constructor(private data?: any,
+            private method?: string,
+            private async?: boolean,
+            private contentType?: string,
+            private handler?: (xhr: XMLHttpRequest) => void) {
             super();
         }
 
@@ -29,6 +35,14 @@ module MVC {
             return this.method;
         }
 
+        public get Async(): boolean {
+            return this.async;
+        }
+
+        public get ContentType(): string {
+            return this.contentType;
+        }
+
         public get Handler(): (xhr: XMLHttpRequest) => void {
             return this.handler;
         }
@@ -38,6 +52,8 @@ module MVC {
                 (this.Data === obj.Data)
                 && (this.Method === obj.Method)
                 && (this.Handler === obj.Handler)
+                && (this.Async === obj.Async)
+                && (this.ContentType === obj.ContentType)
                 );
 
             return equal;
@@ -61,8 +77,8 @@ module MVC {
             this.queue = new Collection<IAjaxRequestItem>();
         }
 
-        private AddToQueue(data: any, method: string, handler: (xhr: XMLHttpRequest) => void): void {
-            var item: IAjaxRequestItem = new AjaxRequestItem(data, method, handler);
+        private AddToQueue(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): void {
+            var item: IAjaxRequestItem = new AjaxRequestItem(data, method, async, contentType, handler);
             if (this.queue.IndexOf(item) < 0) {
                 this.queue.Add(item);
             }
@@ -119,16 +135,35 @@ module MVC {
 
             var uri: string = this.url;
             if (/post/i.test(item.Method)) {
-                uri += "?" + this.Timestamp.getTime();
-                this.XHR.open("POST", uri, true);
+                uri += "?" + this.Timestamp.getTime().toString();
+                this.XHR.open("POST", uri, item.Async);
                 this.XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 this.XHR.setRequestHeader("Content-Length", item.Data.length.toString());
                 this.XHR.send(item.Data);
                 this.updating = true;
             } else {
                 if (typeof item.Data === "string") {
-                    uri += "?" + item.Data + "&timestamp=" + (this.timestamp.getTime());
-                    this.XHR.open("GET", uri, true);
+                    uri += "?" + item.Data + "&timestamp=" + (this.timestamp.getTime().toString());
+                    this.XHR.open("GET", uri, item.Async);
+                    if (item.ContentType && item.ContentType !== "") {
+                        this.XHR.setRequestHeader("Content-Type", item.ContentType);
+                    }
+                    this.XHR.send(null);
+                    this.updating = true;
+                } else if (typeof item.Data === "object") {
+                    uri += "?timestamp=" + (this.timestamp.getTime().toString());
+                    this.XHR.open("GET", uri, item.Async);
+                    if (item.ContentType && item.ContentType !== "") {
+                        this.XHR.setRequestHeader("Content-Type", item.ContentType);
+                    }
+                    this.XHR.send(item.Data);
+                    this.updating = true;
+                } else {
+                    uri += "?timestamp=" + (this.timestamp.getTime().toString());
+                    this.XHR.open("GET", uri, item.Async);
+                    if (item.ContentType && item.ContentType !== "") {
+                        this.XHR.setRequestHeader("Content-Type", item.ContentType);
+                    }
                     this.XHR.send(null);
                     this.updating = true;
                 }
@@ -137,12 +172,12 @@ module MVC {
             return result;
         }
 
-        public Send(data: any, method: string, handler: (xhr: XMLHttpRequest) => void): IAjaxRequest {
+        public Send(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): IAjaxRequest {
             this.EnsureXHR();
 
             this.EnsurePOSTData(data, method);
 
-            this.AddToQueue(data, method, handler);
+            this.AddToQueue(data, method, async, contentType, handler);
 
             if (!this.updating) {
                 this.Start();
