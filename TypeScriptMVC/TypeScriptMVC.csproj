@@ -19,9 +19,12 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Demo\app.html" />
     <Content Include="Content\qunit-theme.css" />
     <Content Include="Content\qunit.css" />
     <Content Include="Binding\Knockout.js" />
+    <Content Include="Demo\Content\demo.css" />
+    <Content Include="Demo\Templates\Home\Index.html" />
     <Content Include="index.html" />
     <None Include="Scripts\_references.js" />
     <Content Include="Testing\Framework\blanket.js" />
@@ -63,6 +66,10 @@
     <TypeScriptCompile Include="Binding\Knockout.d.ts" />
     <TypeScriptCompile Include="Core\Parsing.ts" />
     <TypeScriptCompile Include="AppConfig.ts" />
+    <TypeScriptCompile Include="Demo\Controllers\HomeController.ts" />
+    <TypeScriptCompile Include="Demo\DemoApplication.ts" />
+    <TypeScriptCompile Include="Demo\ViewModels\NameDescriptionViewModel.ts" />
+    <TypeScriptCompile Include="Demo\Views\BaseView.ts" />
     <TypeScriptCompile Include="Results\ActionResult.ts" />
     <TypeScriptCompile Include="Results\ViewResult.ts" />
     <TypeScriptCompile Include="Routing\ControllerLocator.ts" />

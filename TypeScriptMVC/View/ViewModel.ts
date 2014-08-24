@@ -17,18 +17,32 @@ module MVC {
     export class ViewModelBase extends CoreObject implements IViewModel {
         private bindingObject: any;
 
-        public constructor(private view: IView, private model: any) {
+        public constructor(private view?: any, private model?: any) {
             super();
-
-            Args.IsNotNull(view, "view");
-
-            var m: string = null;
-
-            this.view.ViewModel = this;
 
             this.bindingObject = new Object();
 
-            if(!Args.IsNull(model)) {
+            if (!Args.IsNull(this.view)) {
+                if (Args.IsNull(this.model)) {
+                    if (typeof this.view.String === "undefined") {
+                        // handle model
+                        this.ProcessModel(this.model);
+                    } else {
+                        // handle view
+                        this.view.ViewModel = this;
+                    }
+                } else {
+                    // handle view, model
+                    this.view.ViewModel = this;
+                    this.ProcessModel(this.model);
+                }
+            }
+        }
+
+        private ProcessModel(model: any): void {
+            var m: string = null;
+
+            if (!Args.IsNull(model)) {
                 for (m in model) {
                     if (typeof model[m] !== "function") {
                         var member: any = model[m];
@@ -44,6 +58,11 @@ module MVC {
 
         public get View(): IView {
             return this.view;
+        }
+
+        public set View(view: IView) {
+            this.view = view;
+            this.view.ViewModel = this;
         }
 
         public get Model(): any {

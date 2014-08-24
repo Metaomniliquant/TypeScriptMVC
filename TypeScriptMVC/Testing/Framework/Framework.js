@@ -2670,8 +2670,10 @@ var Mock;
 (function (Mock) {
     "use strict";
 
-    var AppConfig = (function () {
+    var AppConfig = (function (_super) {
+        __extends(AppConfig, _super);
         function AppConfig() {
+            _super.apply(this, arguments);
         }
         Object.defineProperty(AppConfig.prototype, "DefaultAction", {
             get: function () {
@@ -2695,13 +2697,13 @@ var Mock;
             configurable: true
         });
         return AppConfig;
-    })();
+    })(MVC.AppConfigBase);
     Mock.AppConfig = AppConfig;
 
     var MockApplication = (function (_super) {
         __extends(MockApplication, _super);
         function MockApplication() {
-            _super.call(this, "MockApplication", new AppConfig());
+            _super.call(this, new AppConfig());
 
             var elem = document.getElementById("qunit-fixture");
 
