@@ -35,32 +35,6 @@ test("equals Test", 1, function () {
     ok(core.equals(core2), "CoreObject.equals(CoreObject) returns true");
 });
 
-test("call Test", 2, function () {
-    var core = new MVC.CoreObject();
-    var core2 = core.call(core, "hello", "world");
-
-    ok((core2 !== null && typeof core2 !== undefined), "core.call(core) did not return null.");
-    ok(typeof core2 === "function", "core.call(core) returned a function.");
-});
-
-test("apply Test", 2, function () {
-    var core = new MVC.CoreObject();
-    var args = ["hello", "world"];
-    var core2 = core.apply(core, args);
-
-    ok((core2 !== null && typeof core2 !== undefined), "core.apply(core) did not return null.");
-    ok(typeof core2 === "function", "core.apply(core) returned a function.");
-});
-
-test("bind Test", 2, function () {
-    var core = new MVC.CoreObject();
-    var args = ["hello", "world"];
-    var core2 = core.bind(core2, "hello", "world");
-
-    ok((core2 !== null && typeof core2 !== undefined), "core.bind(core) did not return null.");
-    ok(typeof core2 === "function", "core.bind(core) returned a function.");
-});
-
 module("MVC.Exception>CoreObject");
 
 test("toString Test", 1, function () {

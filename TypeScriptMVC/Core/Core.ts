@@ -3,7 +3,7 @@
 module MVC {
     "use strict";
 
-    var undefined: any;
+    export var undefined: any;
 
     export interface IUnknown extends Object {
         typeOf: () => string;
@@ -12,7 +12,7 @@ module MVC {
         toString: () => string;
     }
 
-    export class CoreObject implements IUnknown, Function {
+    export class CoreObject implements IUnknown {
         public typeOf(): string {
             return typeof this;
         }
@@ -27,18 +27,9 @@ module MVC {
                 values.push({ name: props[i], value: this[props[i]] });
             }
 
-            var strValues: Array<string> = new Array<string>();
+            var strValues: string = JSON.stringify(values);
 
-            i = 0;
-
-            for (i; i < values.length; i++) {
-                var value: { name: string; value: any } = values[i];
-                var nameStr: string = "[{0}:{1}]".replace("{0}", value.name);
-                var valueStr: string = nameStr.replace("{1}", Args.IsNull(value.value) ? "NULL" : value.value.toString());
-                strValues.push(valueStr);
-            }
-
-            return strValues.join(",");
+            return strValues === "[]" ? "" : strValues;
         }
         public getHashCode(): number {
             var str: string = this.toString(),
@@ -78,27 +69,6 @@ module MVC {
             /* tslint:enable:forin */
 
             return result;
-        }
-        public apply(thisArg: any, argArray?: any): any {
-            return Function.apply(thisArg, argArray);
-        }
-        public call(thisArg: any, ...argArray: any[]): any {
-            return Function.call(thisArg, argArray);
-        }
-        public bind(thisArg: any, ...argArray: any[]): any {
-            return Function.bind(thisArg, argArray);
-        }
-        public get prototype(): Function {
-            return Function.prototype;
-        }
-        public get length(): number {
-            return Function.length;
-        }
-        public get arguments(): any {
-            return Function.arguments;
-        }
-        public get caller(): Function {
-            return Function.caller;
         }
     }
 

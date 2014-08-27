@@ -1,4 +1,6 @@
 ﻿/// <reference path="Core/Core.ts" />
+/// <reference path="Core/DependencyResolver.ts" />
+/// <reference path="Core/DIKeys.ts" />
 /// <reference path="Routing/RouteData.ts" />
 /// <reference path="Routing/HashWatcher.ts" />
 /// <reference path="Routing/Router.ts" />
@@ -11,6 +13,7 @@ module MVC {
 
     export interface IApplication {
         Router: IRouter;
+        Resolver: IDependencyResolver;
         Root: IView;
         HashWatcher: IWatcher<string>;
         Context: IContext;
@@ -35,27 +38,20 @@ module MVC {
 
     export class ApplicationBase extends CoreObject implements IApplication {
         private uniqueIdentifier: string;
-        private static applications: IDictionary<string, IApplicationInitializer> = new Dictionary<string, IApplicationInitializer>();
-        private router: IRouter;
         private root: IView;
-        private hashWatcher: IWatcher<string>;
         private controllers: ICollection<IController>;
-        private context: IContext;
-        private controllerLocator: IControllerLocator;
         public constructor(private config: IAppConfig) {
             super();
 
             this.uniqueIdentifier = this.config.UniqueIdentifier;
 
-            var requestContext: IRequestContext = new RequestContext();
-            this.router = new Router(requestContext);
             this.root = new View(undefined, document.body);
-            this.context = RequestContext.Current;
-            this.hashWatcher = new HashWatcher(this.router, this.context);
-            this.controllerLocator = new ControllerLocator(this.config.AppNamespace);
+        }
+        public get Resolver(): IDependencyResolver {
+            return DependencyResolver.Current;
         }
         public get Router(): IRouter {
-            return this.router;
+            return this.Resolver.GetService<IRouter>(DIKeys.Router(this.uniqueIdentifier));
         }
         public get Root(): IView {
             return this.root;
@@ -64,16 +60,16 @@ module MVC {
             this.root = root;
         }
         public get HashWatcher(): IWatcher<string> {
-            return this.hashWatcher;
+            return this.Resolver.GetService<IWatcher<string>>(DIKeys.HashWatcher(this.uniqueIdentifier));
         }
         public get Context(): IRequestContext {
-            return this.context;
+            return this.Resolver.GetService<IRequestContext>(DIKeys.RequestContext(this.uniqueIdentifier));
         }
         public get Controllers(): ICollection<IController> {
             return this.controllers;
         }
         public get ControllerLocator(): IControllerLocator {
-            return this.controllerLocator;
+            return this.Resolver.GetService<IControllerLocator>(DIKeys.ControllerLocator(this.uniqueIdentifier));
         }
         public get AppConfig(): IAppConfig {
             return this.config;
@@ -81,33 +77,32 @@ module MVC {
         public get UniqueIdentifier(): string {
             return this.uniqueIdentifier;
         }
-        public RegisterController(controller: IController, name: string): IApplication {
-            this.Router.Process(controller, name);
+        public RegisterController(controller: IController): IApplication {
+            this.Router.Process(controller);
 
             return this;
         }
         public LocateControllers(): void {
-            this.controllers = this.controllerLocator.Process();
+            this.controllers = this.ControllerLocator.Process(this.uniqueIdentifier);
         }
         public static Run(application: IApplicationInitializer): void {
             Args.IsNotNull(application, "application");
 
-            if (!ApplicationBase.applications.Contains(application.UniqueIdentifier)) {
-                ApplicationBase.applications.Add(application.UniqueIdentifier, application);
+            if(!DependencyResolver.Current.IsRegistered(DIKeys.Application(application.UniqueIdentifier))) {
+                DependencyResolver.Current
+                    .RegisterType(DIKeys.RequestContext(application.UniqueIdentifier), RequestContext)
+                    .RegisterType(DIKeys.ModelBinder(), DefaultModelBinder)
+                    .RegisterInstance(DIKeys.ControllerLocator(application.UniqueIdentifier),
+                        new ControllerLocator(application.AppConfig.AppNamespace))
+                    .RegisterInstance(DIKeys.Router(application.UniqueIdentifier), new Router(
+                        DependencyResolver.Current.GetService<IRequestContext>(DIKeys.RequestContext(application.UniqueIdentifier))))
+                    .RegisterInstance(DIKeys.HashWatcher(application.UniqueIdentifier), new HashWatcher(
+                        DependencyResolver.Current.GetService<IRouter>(DIKeys.Router(application.UniqueIdentifier)),
+                        DependencyResolver.Current.GetService<IRequestContext>(DIKeys.RequestContext(application.UniqueIdentifier))))
+                    .RegisterInstance(DIKeys.Application(application.UniqueIdentifier), application);
             }
 
             application.Start();
-        }
-        public static Instance(uniqueIdentifier: string): IApplication {
-            if (Args.IsNull(ApplicationBase.applications)) {
-                throw new NullReferenceException();
-            }
-
-            if (!ApplicationBase.applications.Contains(uniqueIdentifier)) {
-                throw new ArgumentOutOfRangeException("uniqueIdentifier");
-            } else {
-                return ApplicationBase.applications.Get(uniqueIdentifier);
-            }
         }
     }
 

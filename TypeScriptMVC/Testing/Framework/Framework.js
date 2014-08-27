@@ -2614,13 +2614,19 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var MockView = (function (_super) {
-    __extends(MockView, _super);
-    function MockView() {
-        _super.apply(this, arguments);
-    }
-    return MockView;
-})(MVC.View);
+var Mock;
+(function (Mock) {
+    "use strict";
+
+    var MockView = (function (_super) {
+        __extends(MockView, _super);
+        function MockView() {
+            _super.apply(this, arguments);
+        }
+        return MockView;
+    })(MVC.View);
+    Mock.MockView = MockView;
+})(Mock || (Mock = {}));
 
 ///#source 1 1 /Testing/Framework/MockController.js
 /// <reference path="../../Controller.ts" />
@@ -2637,14 +2643,14 @@ var Mock;
     var MockController = (function (_super) {
         __extends(MockController, _super);
         function MockController() {
-            _super.call(this, "MockController", "MockApplication");
+            _super.apply(this, arguments);
         }
         MockController.prototype.IndexAction = function () {
             this.ViewData.Add("ViewDataKey", "View Data Key");
 
             var htmlStr = "<div data-bind='text: name'></div>" + "<div data-bind='text: count'></div>" + "<div data-bind='text: names'></div>" + "<div data-bind='text: ViewData[0]'></div>";
 
-            var view = new MockView(htmlStr);
+            var view = new MVC.View(htmlStr);
             var viewModel = new Mock.MockViewModel(view, {
                 name: "First Name",
                 count: 10,

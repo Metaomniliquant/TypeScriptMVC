@@ -20,7 +20,9 @@ module MVC {
             Args.IsNotNull(this.controllerName, "controllerName");
             Args.IsNotNull(this.applicationIdentifier, "applicationIdentifier");
 
-            Application.Instance(this.applicationIdentifier).RegisterController(this, controllerName);
+            DependencyResolver.Current.GetService<IApplication>(
+                DIKeys.Application(this.applicationIdentifier))
+                    .RegisterController(this, controllerName);
 
             this.viewData = new ViewDataDictionary();
         }
@@ -63,14 +65,16 @@ module MVC {
                         viewModel.View = new View(ViewBase
                             .GetHtmlString(
                                 viewModelController,
-                                "{0}/{0}.html".replace("{0}", actionViewModel)));
+                                "{0}.html"
+                                    .replace("{0}", actionViewModel)));
                         return new ViewResult(viewModel.View, this.ViewData);
                     } else {
                         // handle action, controller
                         view = new View(ViewBase
                             .GetHtmlString(
                                 viewModelController,
-                                "{0}/{0}.html".replace("{0}", actionViewModel)));
+                                "{0}.html"
+                                    .replace("{0}", actionViewModel)));
                         return new ViewResult(view, this.ViewData);
                     }
                 } else if (!Args.IsNull(typeofViewModelController)) {

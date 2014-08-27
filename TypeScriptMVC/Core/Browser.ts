@@ -166,7 +166,8 @@ module MVC {
 
     export class DefaultWindow extends CoreObject {
         public static Get(): Window {
-            return window;
+            var that: string = "this";
+            return (0,eval)(that);
         }
     }
 }

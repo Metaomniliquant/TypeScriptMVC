@@ -6,17 +6,17 @@ module MVC {
 
     export interface IView {
         String: string;
-        Html: Element;
+        Html: HTMLElement;
         ViewModel: IViewModel;
-        ModelBinder: IModelBinder;
         Render: (viewContext: IViewContext) => void;
     }
 
-    export class ViewBase implements IView {
-        private modelBinder: IModelBinder;
+    export class ViewBase extends CoreObject implements IView {
         private viewModel: IViewModel;
 
         public constructor(private html: string = null, private element: HTMLElement = null) {
+            super();
+
             if (this.html === null || this.html === "") {
                 if (this.element == null) {
                     if (Args.IsNull(html) && Args.IsNull(element)) {
@@ -35,8 +35,6 @@ module MVC {
                 this.html = html;
                 this.element = element;
             }
-
-            this.modelBinder = new DefaultModelBinder();
         }
 
         public get String(): string {
@@ -55,20 +53,14 @@ module MVC {
             this.viewModel = viewModel;
         }
 
-        public get ModelBinder(): IModelBinder {
-            return this.modelBinder;
-        }
-
-        public set ModelBinder(modelBinder: IModelBinder) {
-            this.modelBinder = modelBinder;
-        }
-
         public Render(viewContext: IViewContext): void {
             Args.IsNotNull(viewContext, "viewContext");
 
-            ApplicationBase.Instance(viewContext.Controller.ApplicationIdentifier).Root.Html.appendChild(this.Html);
+            DependencyResolver.Current.GetService<IApplication>(
+                DIKeys.Application(viewContext.Controller.ApplicationIdentifier))
+                    .Root.Html.appendChild(this.Html);
 
-            this.modelBinder.PerformBinding(viewContext);
+            this.ViewModel.ModelBinder.PerformBinding(viewContext);
         }
 
         static GetTemplate(url: string, handler: (xhr: XMLHttpRequest) => void): void {

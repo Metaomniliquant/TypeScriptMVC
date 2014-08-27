@@ -22,7 +22,7 @@ module Demo {
         }
 
         public set Description(value: string) {
-            this.SetPropertyItem("name", value);
+            this.SetPropertyItem("description", value);
         }
     }
 }

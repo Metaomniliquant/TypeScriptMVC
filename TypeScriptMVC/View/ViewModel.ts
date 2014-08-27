@@ -8,6 +8,7 @@ module MVC {
         View: IView;
         Model: any;
         BindingObject: any;
+        ModelBinder: IModelBinder;
         GetPropertyItem: <T>(name: string) => T;
         GetPropertyArray: <T>(name: string) => Array<T>;
         SetPropertyItem: <T>(name: string, value: T) => void;
@@ -16,11 +17,14 @@ module MVC {
 
     export class ViewModelBase extends CoreObject implements IViewModel {
         private bindingObject: any;
+        private modelBinder: IModelBinder;
 
         public constructor(private view?: any, private model?: any) {
             super();
 
             this.bindingObject = new Object();
+
+            this.modelBinder = DependencyResolver.Current.GetService<IModelBinder>(DIKeys.ModelBinder());
 
             if (!Args.IsNull(this.view)) {
                 if (Args.IsNull(this.model)) {
@@ -47,9 +51,9 @@ module MVC {
                     if (typeof model[m] !== "function") {
                         var member: any = model[m];
                         if (typeof member.length === "undefined" || typeof member === "string") {
-                            this.bindingObject[m] = this.View.ModelBinder.GetBoundItem(member);
+                            this.bindingObject[m] = this.ModelBinder.GetBoundItem(member);
                         } else {
-                            this.bindingObject[m] = this.View.ModelBinder.GetBoundArray(member);
+                            this.bindingObject[m] = this.ModelBinder.GetBoundArray(member);
                         }
                     }
                 }
@@ -73,11 +77,19 @@ module MVC {
             return this.bindingObject;
         }
 
+        public get ModelBinder(): IModelBinder {
+            return this.modelBinder;
+        }
+
+        public set ModelBinder(modelBinder: IModelBinder) {
+            this.modelBinder = modelBinder;
+        }
+
         public GetPropertyItem<T>(name: string): T {
             var member: any = this.bindingObject[name];
 
             if (!Args.IsNull(member)) {
-                return this.View.ModelBinder.GetItem(member);
+                return this.ModelBinder.GetItem(member);
             }
 
             return member;
@@ -87,18 +99,18 @@ module MVC {
             var member: any = this.bindingObject[name];
 
             if (!Args.IsNull(member)) {
-                return this.View.ModelBinder.GetArray(member);
+                return this.ModelBinder.GetArray(member);
             }
 
             return member;
         }
 
         public SetPropertyItem<T>(name: string, value: T): void {
-            this.bindingObject[name] = this.View.ModelBinder.GetBoundItem(value);
+            this.bindingObject[name] = this.ModelBinder.GetBoundItem(value);
         }
 
         public SetPropertyArray<T>(name: string, value: Array<T>): void {
-            this.bindingObject[name] = this.View.ModelBinder.GetBoundArray(value);
+            this.bindingObject[name] = this.ModelBinder.GetBoundArray(value);
         }
     }
 

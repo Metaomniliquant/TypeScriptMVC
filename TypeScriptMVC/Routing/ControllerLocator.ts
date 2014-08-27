@@ -5,7 +5,7 @@ module MVC {
     "use strict";
 
     export interface IControllerLocator {
-        Process(): ICollection<IController>;
+        Process(appId: string): ICollection<IController>;
     }
 
     export class ControllerLocatorBase extends CoreObject implements IControllerLocator {
@@ -13,13 +13,15 @@ module MVC {
             super();
         }
 
-        public Process(): ICollection<IController> {
+        public Process(appId: string): ICollection<IController> {
             var controllers: ICollection<IController> = new Collection<IController>(),
                 c: string = null;
             if (!Args.IsNull(this.root)) {
                 for (c in this.root) {
                     if (c.lastIndexOf("Controller") > 0) {
-                        controllers.Add(new this.root[c]());
+                        var tmp: IController = new this.root[c](c, appId);
+
+                        controllers.Add(tmp);
                     }
                 }
             }

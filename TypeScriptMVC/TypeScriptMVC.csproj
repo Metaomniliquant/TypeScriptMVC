@@ -62,8 +62,10 @@
     <TypeScriptCompile Include="Core\Collections.ts" />
     <TypeScriptCompile Include="Core\Context.ts" />
     <TypeScriptCompile Include="Core\Core.ts" />
+    <TypeScriptCompile Include="Core\DependencyResolver.ts" />
     <TypeScriptCompile Include="Core\Dictionary.ts" />
     <TypeScriptCompile Include="Binding\Knockout.d.ts" />
+    <TypeScriptCompile Include="Core\DIKeys.ts" />
     <TypeScriptCompile Include="Core\Parsing.ts" />
     <TypeScriptCompile Include="AppConfig.ts" />
     <TypeScriptCompile Include="Demo\Controllers\HomeController.ts" />
@@ -81,7 +83,6 @@
     <TypeScriptCompile Include="Routing\Router.ts" />
     <TypeScriptCompile Include="Testing\Framework\MockApplication.ts" />
     <TypeScriptCompile Include="Testing\Framework\MockController.ts" />
-    <TypeScriptCompile Include="Testing\Framework\MockView.ts" />
     <TypeScriptCompile Include="Testing\Framework\MockViewModel.ts" />
     <TypeScriptCompile Include="View\View.ts" />
     <TypeScriptCompile Include="View\DataDictionary.ts" />

@@ -77,6 +77,28 @@ module MVC {
             this.queue = new Collection<IAjaxRequestItem>();
         }
 
+        public Send(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): IAjaxRequest {
+            this.EnsureXHR();
+
+            this.EnsurePOSTData(data, method);
+
+            this.AddToQueue(data, method, async, contentType, handler);
+
+            if (!this.updating) {
+                this.Start();
+            }
+
+            return this;
+        }
+
+        public Abort(): void {
+            this.updating = false;
+            if (!Args.IsNull(this.xhr)) {
+                this.xhr.abort();
+                this.xhr = null;
+            }
+        }
+
         private AddToQueue(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): void {
             var item: IAjaxRequestItem = new AjaxRequestItem(data, method, async, contentType, handler);
             if (this.queue.IndexOf(item) < 0) {
@@ -170,28 +192,6 @@ module MVC {
             }
 
             return result;
-        }
-
-        public Send(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): IAjaxRequest {
-            this.EnsureXHR();
-
-            this.EnsurePOSTData(data, method);
-
-            this.AddToQueue(data, method, async, contentType, handler);
-
-            if (!this.updating) {
-                this.Start();
-            }
-
-            return this;
-        }
-
-        public Abort(): void {
-            this.updating = false;
-            if (!Args.IsNull(this.xhr)) {
-                this.xhr.abort();
-                this.xhr = null;
-            }
         }
 
         public get XHR(): XMLHttpRequest {

@@ -20,7 +20,7 @@ module MVC {
         Definitions: Array<IRouteDefinition>;
         Match: (url: string) => IRouteDefinition;
         MapPath: (definition: IRouteDefinition) => IRouter;
-        Process: (controller: IController, name: string) => void;
+        Process: (controller: IController) => void;
         ProcessRoute: (route: IRouteData) => void;
         RequestContext: IRequestContext;
     }
@@ -105,6 +105,23 @@ module MVC {
             return this;
         }
 
+        public Process(controller: IController): void {
+            var item: IControllerRegistryItem = null;
+
+            Args.IsNotNull(controller, "controller");
+
+            var name: string = controller.FullControllerName;
+
+            item = this.registry.GetRegistryItem(controller, name);
+
+            if (Args.IsNull(item)) {
+                var actions: ICollection<string> = this.GetActionMethods(controller);
+                var registryItem: IControllerRegistryItem = new ControllerRegistryItem(controller, name, actions);
+
+                this.registry.Add(registryItem);
+            }
+        }
+
         private GetActionMethods(controller: IController): ICollection<string> {
             var member: string = null,
                 results: ICollection<string> = new Collection<string>();
@@ -122,22 +139,6 @@ module MVC {
             }
 
             return results;
-        }
-
-        public Process(controller: IController, name: string): void {
-            var item: IControllerRegistryItem = null;
-
-            Args.IsNotNull(controller, "controller");
-            Args.IsNotNull(name, "name");
-
-            item = this.registry.GetRegistryItem(controller, name);
-
-            if (Args.IsNull(item)) {
-                var actions: ICollection<string> = this.GetActionMethods(controller);
-                var registryItem: IControllerRegistryItem = new ControllerRegistryItem(controller, name, actions);
-
-                this.registry.Add(registryItem);
-            }
         }
 
         private EnsureActionMethod(actionMethod: (id?:string) => IActionResult, controllerName: string, action: string): void {

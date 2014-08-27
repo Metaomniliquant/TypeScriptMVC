@@ -7,10 +7,6 @@ module Demo {
     "use strict";
 
     export class HomeController extends MVC.Controller {
-        public constructor() {
-            super("HomeController", new AppConfig().UniqueIdentifier);
-        }
-
         public IndexAction(): MVC.IActionResult {
             var viewModel: NameDescriptionViewModel = new NameDescriptionViewModel();
             viewModel.Name = "Index View";
