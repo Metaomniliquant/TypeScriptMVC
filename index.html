@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>TypeScriptMVC by Metaomniliquant</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>TypeScriptMVC</h1>
+        <h2>TypeScriptMVC is an MVC implementation written in TypeScript. The original goal of this framework is to provide a strongly typed MVC framework that generally reads like ASP.Net MVC.</h2>
+        <a href="https://github.com/Metaomniliquant/TypeScriptMVC" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="typescriptmvc" class="anchor" href="#typescriptmvc"><span class="octicon octicon-link"></span></a>TypeScriptMVC</h1>
+
+<p><strong>TypeScriptMVC</strong> is an MVC implementation written in <a href="http://www.typescriptlang.org/">TypeScript</a>. The original goal of this framework is to provide a strongly typed MVC framework that generally reads like <a href="http://www.asp.net/mvc/mvc5">ASP.Net MVC</a>.</p>
+
+<div>
+VERSIONS
+</div>
+
+<div>
+  <ul>
+<li>TypeScriptMVC Version 1.0 (Development Stage)</li>
+  </ul>
+</div>
+
+<div>
+**Note: TypeScriptMVC Version 1.0 is currently under development. Any code and explanations provided are subject to change and is not guaranteed to be accurate upon the time of reading. When Version 1.0 is released, official documentation will be provided.
+</div>
+
+<h2>
+<a name="general-concepts" class="anchor" href="#general-concepts"><span class="octicon octicon-link"></span></a>General Concepts</h2>
+
+<p><strong>TypeScriptMVC</strong> was designed to feel like ASP.NET MVC. From Routing to ModelBinders, the familiar concepts used during development using ASP.NET MVC exist during development using <strong>TypeScriptMVC</strong>.</p>
+
+<h3>
+<a name="applications" class="anchor" href="#applications"><span class="octicon octicon-link"></span></a>Applications</h3>
+
+<p>As with ASP.NET MVC, use convention over configuration. In the below snippet, auto-identification of controllers is enabled by matching the application namespace (Demo) and the AppNamespace (Demo). It is thus recommended to have one application per AppNamespace.</p>
+
+<pre>
+module Demo {
+    "use strict";
+
+    export class AppConfig extends MVC.AppConfigBase {
+        public get AppNamespace(): Object {
+            return Demo;
+        }
+
+        public get RootPath(): string {
+            return "../../";
+        }
+    }
+
+    export class DemoApplication extends MVC.Application {
+        public constructor() {
+            super(new AppConfig());
+        }
+
+        public Application_Start(): void {
+            this.Router.MapPath(
+                new MVC.RouteDefinition("/{controller}/{action}"));
+            this.Router.MapPath(
+                new MVC.RouteDefinition("/{controller}/{action}/{id}"));
+        }
+
+        public Application_Error(): void {
+            var routeData: MVC.IRouteData = new MVC.RouteData();
+            routeData.Add("Error");
+            routeData.Add("Index");
+
+            this.Router.ProcessRoute(routeData);
+        }
+    }
+}
+</pre>
+
+<p>We have an <code>MVC.Application</code> implementation called <code>DemoApplication</code>. This application uses a custom <code>MVC.IAppConfig</code> implementation called <code>AppConfig</code> to specify a default controller action method and the root application namespace (hey, even ASP.NET has a config file).</p>
+
+<p>The application contains other common concepts in ASP.NET MVC development such as defining routes and custom error handling.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Metaomniliquant/TypeScriptMVC/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Metaomniliquant/TypeScriptMVC/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Metaomniliquant/TypeScriptMVC"></a> is maintained by <a href="https://github.com/Metaomniliquant">Metaomniliquant</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
