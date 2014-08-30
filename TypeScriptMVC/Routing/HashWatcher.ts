@@ -51,13 +51,14 @@ module MVC {
     }
 
     export class HashWatcher extends WatcherBase<string> {
-        public constructor(handler: IWatchHandler<string>, private context: IContext) {
+        public constructor(handler: IWatchHandler<string>, private context: IContext, private defaultRoute: string = "#/Home/Index") {
             super(handler);
 
             Args.IsNotNull(context, "context");
         }
         public Watch(): void {
             window.addEventListener("hashchange", this.HashChangeHandler.bind(this), false);
+            this.Handler.OnWatchedChange(new HashWatchedObject(this.defaultRoute));
         }
         public Ignore(): void {
             window.removeEventListener("hashchange", this.HashChangeHandler, false);

@@ -55,7 +55,7 @@ module MVC {
 
             /* tslint:disable:forin */
             for (t in this) {
-                if (typeof b[t] === undefined || (b[t] !== this[t])) {
+                if (typeof b[t] === "undefined" || (b[t] !== this[t])) {
                     result = false;
                     break;
                 }

@@ -12,8 +12,6 @@
   <files>
     <file>/Testing/Framework/qunit.js</file>
     <file>/Testing/Framework/blanket.js</file>
-    <file>/Testing/Framework/MockViewModel.js</file>
-    <file>/Testing/Framework/MockView.js</file>
     <file>/Testing/Framework/MockController.js</file>
     <file>/Testing/Framework/MockApplication.js</file>
   </files>

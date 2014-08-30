@@ -53,12 +53,21 @@ module MVC {
             this.viewModel = viewModel;
         }
 
+        private Application(appId: string): IApplication {
+            return DependencyResolver.Current.GetService<IApplication>(
+                DIKeys.Application(appId));
+        }
+
         public Render(viewContext: IViewContext): void {
             Args.IsNotNull(viewContext, "viewContext");
 
-            DependencyResolver.Current.GetService<IApplication>(
-                DIKeys.Application(viewContext.Controller.ApplicationIdentifier))
-                    .Root.Html.appendChild(this.Html);
+            var application: IApplication = this.Application(viewContext.Controller.AppId);
+            var root: HTMLElement = application.Root.Html;
+            while (root.firstChild) {
+                root.removeChild(root.firstChild);
+            }
+
+            root.appendChild(this.element);
 
             this.ViewModel.ModelBinder.PerformBinding(viewContext);
         }

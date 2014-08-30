@@ -2,6 +2,7 @@
     "use strict";
 
     export interface IAppConfig {
+        DefaultRoute: string;
         DefaultAction: string;
         UniqueIdentifier: string;
         AppNamespace: Object;
@@ -14,6 +15,10 @@
             super();
 
             this.uniqueIdentifier = Date.now().toString();
+        }
+
+        public get DefaultRoute(): string {
+            return "Home\Index";
         }
 
         public get DefaultAction(): string {

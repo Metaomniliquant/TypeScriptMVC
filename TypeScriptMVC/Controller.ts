@@ -6,7 +6,7 @@ module MVC {
 
     export interface IController {
         ViewData: ViewDataDictionary;
-        ApplicationIdentifier: string;
+        AppId: string;
         FullControllerName: string;
         Name: string;
     }
@@ -31,7 +31,7 @@ module MVC {
             return this.viewData;
         }
 
-        public get ApplicationIdentifier(): string {
+        public get AppId(): string {
             return this.applicationIdentifier;
         }
 
