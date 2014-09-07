@@ -16,9 +16,13 @@ module MVC {
         public PerformBinding(viewContext: IViewContext): void {
             Args.IsNotNull(viewContext, "viewContext");
 
+            var viewDataStr: string = "",
+                model: any = null,
+                app: IApplication = null;
+
             if (!Args.IsNull(viewContext.View) && !Args.IsNull(viewContext.View.ViewModel)) {
-                var viewDataStr: string = "ViewData";
-                var model: any = viewContext.View.ViewModel.BindingObject;
+                viewDataStr = "ViewData";
+                model = viewContext.View.ViewModel.BindingObject;
 
                 if (!Args.IsNull(viewContext.ViewData)) {
                     model[viewDataStr] = viewContext.ViewData.DataItems;
@@ -26,7 +30,12 @@ module MVC {
                     model[viewDataStr] = new Object();
                 }
 
-                ko.applyBindings(model, viewContext.View.Html);
+                app = DependencyResolver.Current
+                    .GetService<IApplication>(DIKeys.Application(viewContext.Controller.AppId));
+
+                document.body.appendChild(app.Root.Html);
+
+                ko.applyBindings(model, app.Root.Html);
             }
         }
 

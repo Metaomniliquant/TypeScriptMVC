@@ -67,48 +67,85 @@ module MVC {
                 root.removeChild(root.firstChild);
             }
 
-            root.appendChild(this.element);
+            var html: HTMLElement = document.createElement("div");
+
+            if (!Args.IsNull(this.element.firstChild) && this.element.firstChild.nodeName.toLowerCase() === "script") {
+                html.innerHTML = this.element.getElementsByTagName("script").item(0).innerHTML;
+            } else {
+                html.innerHTML = this.element.innerHTML;
+            }
+
+            root.appendChild(html);
 
             this.ViewModel.ModelBinder.PerformBinding(viewContext);
+        }
+
+        static EnsureTemplate(url: string): HTMLElement {
+            var i: number = 0;
+
+            var scripts: NodeListOf<HTMLScriptElement> = document.getElementsByTagName("script");
+            if (scripts.length) {
+                for (; i < scripts.length; i++) {
+                    var script: HTMLScriptElement = scripts.item(i);
+
+                    var dataPath: Attr = script.attributes.getNamedItem("data-path");
+
+                    if (!Args.IsNull(dataPath) && dataPath.value !== "") {
+                        var path: string = dataPath.value;
+
+                        if (path.toLowerCase() === url.toLowerCase()) {
+                            return script;
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         static GetTemplate(url: string, handler: (xhr: XMLHttpRequest) => void): void {
             MVC.Args.IsNotNull(url, "url");
 
-            var request: MVC.IAjaxRequest = new MVC.AjaxRequest(url);
+            var request: IAjaxRequest;
+
+            request = new MVC.AjaxRequest(url);
+
             request.Send(null, "get", false, "text/html", handler);
         }
 
-
         static GetHtmlString(urlController: string, actionName?: string, fileName?: string): string {
             var html: string = "",
-                url: string = urlController;
+                url: string = "",
+                elem: HTMLElement = null;
 
             MVC.Args.IsNotNull(urlController, "urlController");
 
             if (MVC.Args.IsNull(actionName)) {
                 // handle url
-                ViewBase.GetTemplate(url, (xhr: XMLHttpRequest): void => {
-                    html = xhr.responseText;
-                });
+                url = urlController;
             } else if (!MVC.Args.IsNull(actionName)) {
                 if (MVC.Args.IsNull(fileName)) {
                     // handle controller/actionName
                     url = "Templates/{0}/{1}"
                         .replace("{0}", urlController)
                         .replace("{1}", actionName);
-
-                    ViewBase.GetTemplate(url, (xhr: XMLHttpRequest): void => {
-                        html = xhr.responseText;
-                    });
                 } else {
                     // handle controller/action/filename.html
                     url = "Templates/{0}/{1}/{2}"
                         .replace("{0}", urlController)
                         .replace("{1}", actionName)
                         .replace("{2}", fileName);
+                }
+
+                elem = ViewBase.EnsureTemplate(url);
+
+                if (elem != null) {
+                    html = elem.innerHTML;
+                } else {
                     ViewBase.GetTemplate(url, (xhr: XMLHttpRequest): void => {
-                        html = xhr.responseText;
+                        if (xhr.status === 200) {
+                            html = xhr.responseText;
+                        }
                     });
                 }
             }

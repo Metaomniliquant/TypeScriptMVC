@@ -19,7 +19,7 @@ module MVC {
     export interface IRouter extends IParser<string, IRouteData>, IWatchHandler<string> {
         Definitions: Array<IRouteDefinition>;
         Match: (url: string) => IRouteDefinition;
-        MapPath: (definition: IRouteDefinition) => IRouter;
+        MapPath: (definition: IRouteDefinition, defaults?: Object) => IRouter;
         Process: (controller: IController) => void;
         ProcessRoute: (route: IRouteData) => void;
         RequestContext: IRequestContext;
@@ -93,11 +93,11 @@ module MVC {
             return result;
         }
 
-        public MapPath(definition: IRouteDefinition): IRouter;
-        public MapPath(definition: string): IRouter;
-        public MapPath(definition: any): IRouter {
+        public MapPath(definition: IRouteDefinition, defaults?: Object): IRouter;
+        public MapPath(definition: string, defaults?: Object): IRouter;
+        public MapPath(definition: any, defaults?: Object): IRouter {
             if (typeof definition === "string") {
-                this.definitions.push(new RouteDefinition(definition));
+                this.definitions.push(new RouteDefinition(definition, defaults));
             } else if (definition instanceof CoreObject) {
                 this.definitions.push(definition);
             }
@@ -122,6 +122,36 @@ module MVC {
             }
         }
 
+        private GetTemplates(controller: string, actions: ICollection<string>): void {
+            var urlFormat: string = "Templates/{0}/{1}.html"
+                .replace("{0}", controller),
+                i: number = 0,
+                action: string,
+                url: string,
+                ajax: IAjaxRequest,
+                script: HTMLScriptElement;
+
+            for (; i < actions.Count; i++) {
+                action = actions.Items[i];
+
+                url = urlFormat.replace("{1}", action);
+
+                ajax = new MVC.AjaxRequest(url.toLowerCase());
+                ajax.Send(null, "get", false, "text/html", (xhr: XMLHttpRequest): void => {
+                    if (!Args.IsNull(xhr) && !Args.IsNull(xhr.responseText) && xhr.status === 200) {
+                        script = document.createElement("script");
+                        script.setAttribute("data-path", ajax.Url);
+                        document.body.appendChild(script);
+
+                        script.innerHTML = xhr.responseText;
+                    }
+                }, (evt: ErrorEvent, xhr: XMLHttpRequest): void => {
+                    // we must assume the template is being explicitly generated as needed.
+                    // ignore the failed attempt -
+                    });
+            }
+        }
+
         private GetActionMethods(controller: IController): ICollection<string> {
             var member: string = null,
                 results: ICollection<string> = new Collection<string>();
@@ -137,6 +167,8 @@ module MVC {
                     results.Add(names.join());
                 }
             }
+
+            this.GetTemplates(controller.Name, results);
 
             return results;
         }
@@ -163,11 +195,20 @@ module MVC {
         public ProcessRoute(route: IRouteData): void {
             Args.IsNotNull(route, "route");
 
-            var controllerName: string = route.Get(0),
-                registryItem: IControllerRegistryItem = this.registry.FindByName(controllerName),
-                controller: IController = registryItem.Controller,
+            var controllerName: string,
+                registryItem: IControllerRegistryItem,
+                controller: IController,
                 defaultAction: string = "Index",
                 actionResult: IActionResult = null;
+
+            controllerName = route.Get(0);
+            registryItem = this.registry.FindByName(controllerName);
+
+            if (Args.IsNull(registryItem) || Args.IsNull(registryItem.Controller)) {
+                return;
+            }
+
+            controller = registryItem.Controller;
 
             if (route.Count > 1) {
                 var actionName: string = route.Get(1),

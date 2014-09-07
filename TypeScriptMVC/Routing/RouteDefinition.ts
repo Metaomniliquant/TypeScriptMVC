@@ -14,13 +14,17 @@ module MVC {
     export class RouteDefinition extends CoreObject implements IRouteDefinition {
         private routeData: IRouteData;
         private urlTemplate: string;
-        public constructor(urlTemplate: string) {
+        private defaults: Object;
+        private defaultRouteData: IRouteData;
+        public constructor(urlTemplate: string, defaults: Object) {
             super();
 
             var parsedObj: IParsedObject<string, IRouteData> = this.Parse(urlTemplate);
 
             this.urlTemplate = parsedObj.Original;
             this.routeData = parsedObj.Value;
+            this.defaults = defaults;
+            this.defaultRouteData = this.ParseDefaults(defaults);
         }
 
         public get UrlTemplate(): string {
@@ -43,6 +47,29 @@ module MVC {
             }
 
             return result;
+        }
+
+        private ParseDefaults(defaults: any): IRouteData {
+            var results: IRouteData = new RouteData(),
+                i: number = 0,
+                item: string = "";
+
+            if (Args.IsNull(defaults)) {
+                return null;
+            }
+
+            var allItems: string = this.urlTemplate.split("{").join("").split("}").join("");
+            var segments: Array<string> = allItems.split("/");
+
+            for (; i < segments.length; i++) {
+                item = segments[i];
+
+                if (typeof item === "string" && item !== "") {
+                    results.Add(item);
+                }
+            }
+
+            return results;
         }
 
         Parse(urlTemplate: string): IParsedObject<string, IRouteData> {

@@ -41,8 +41,40 @@ module MVC {
         public constructor(private config: IAppConfig) {
             super();
 
-            this.root = new View(undefined, document.body);
+            var defaultHtml: string = "";
+
+            defaultHtml = this.DefaultHtml;
+
+            this.root = new View(defaultHtml, undefined);
             this.root.Html.setAttribute("data-application", this.config.UniqueIdentifier);
+        }
+        private get DefaultHtml(): string {
+            var result: string = "";
+
+            var apps: NodeList = document.getElementsByClassName("application"),
+                last: Node = null,
+                temp: HTMLElement = null;
+
+            if (!Args.IsNull(apps) && apps.length) {
+                last = apps.item(apps.length - 1);
+
+                temp = document.createElement("div");
+                temp.appendChild(last);
+                result = temp.innerHTML;
+            } else {
+                temp = document.createElement("div");
+                if (temp.className) {
+                    temp.className = "application";
+                } else {
+                    temp.setAttribute("class", "application");
+                }
+
+                result = temp.outerHTML;
+
+                document.body.appendChild(temp);
+            }
+
+            return result;
         }
         public get Resolver(): IDependencyResolver {
             return DependencyResolver.Current;
@@ -112,8 +144,8 @@ module MVC {
         }
 
         public Application_Start(): void {
-            this.Router.MapPath(new RouteDefinition("{controller}/{action}"));
-            this.Router.MapPath(new RouteDefinition("{controller}/{action}/{id}"));
+            this.Router.MapPath(new RouteDefinition("{controller}/{action}", null));
+            this.Router.MapPath(new RouteDefinition("{controller}/{action}/{id}", null));
         }
 
         public Error(): void {

@@ -18,10 +18,6 @@ module Mock {
     export class MockApplication extends MVC.Application {
         public constructor() {
             super(new AppConfig());
-
-            var elem: HTMLElement = document.getElementById("qunit-fixture");
-
-            this.Root = new MVC.View(undefined, elem);
         }
     }
 }

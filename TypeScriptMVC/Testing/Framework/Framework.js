@@ -2631,13 +2631,66 @@ var Mock;
         __extends(MockApplication, _super);
         function MockApplication() {
             _super.call(this, new AppConfig());
-
-            var elem = document.getElementById("qunit-fixture");
-
-            this.Root = new MVC.View(undefined, elem);
         }
         return MockApplication;
     })(MVC.Application);
     Mock.MockApplication = MockApplication;
+})(Mock || (Mock = {}));
+
+///#source 1 1 /Testing/Framework/MockViewModel.js
+/// <reference path="../../View/ViewModel.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Mock;
+(function (Mock) {
+    "use strict";
+
+    var MockViewModel = (function (_super) {
+        __extends(MockViewModel, _super);
+        function MockViewModel() {
+            _super.apply(this, arguments);
+        }
+        Object.defineProperty(MockViewModel.prototype, "Name", {
+            get: function () {
+                return this.GetPropertyItem("name");
+            },
+            set: function (name) {
+                this.SetPropertyItem("name", this.Model.name);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(MockViewModel.prototype, "Count", {
+            get: function () {
+                return this.GetPropertyItem("count");
+            },
+            set: function (count) {
+                this.SetPropertyItem("count", this.Model.count);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(MockViewModel.prototype, "Names", {
+            get: function () {
+                return this.GetPropertyArray("names");
+            },
+            set: function (names) {
+                this.SetPropertyArray("names", this.Model.names);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        return MockViewModel;
+    })(MVC.ViewModel);
+    Mock.MockViewModel = MockViewModel;
 })(Mock || (Mock = {}));
 

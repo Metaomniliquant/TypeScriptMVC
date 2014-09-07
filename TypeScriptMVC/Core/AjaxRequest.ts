@@ -9,12 +9,16 @@ module MVC {
         Async: boolean;
         ContentType: string;
         Handler: (xhr: XMLHttpRequest) => void;
+        ErrorHandler: (evt: ErrorEvent, xhr: XMLHttpRequest) => void;
     }
 
     export interface IAjaxRequest {
         XHR: XMLHttpRequest;
+        Url: string;
         Updating: boolean;
-        Send: (data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void) => IAjaxRequest;
+        Send: (data: any, method: string, async: boolean, contentType: string,
+            handler: (xhr: XMLHttpRequest) => void,
+            errorHandler?: (evt: ErrorEvent, xhr: XMLHttpRequest) => void) => IAjaxRequest;
         Timestamp: Date;
     }
 
@@ -23,7 +27,8 @@ module MVC {
             private method?: string,
             private async?: boolean,
             private contentType?: string,
-            private handler?: (xhr: XMLHttpRequest) => void) {
+            private handler?: (xhr: XMLHttpRequest) => void,
+            private errorHandler?: (evt: ErrorEvent, xhr: XMLHttpRequest) => void) {
             super();
         }
 
@@ -47,11 +52,16 @@ module MVC {
             return this.handler;
         }
 
+        public get ErrorHandler(): (evt: ErrorEvent, xhr: XMLHttpRequest) => void {
+            return this.errorHandler;
+        }
+
         public equals(obj: IAjaxRequestItem): boolean {
             var equal: boolean = (
                 (this.Data === obj.Data)
                 && (this.Method === obj.Method)
                 && (this.Handler === obj.Handler)
+                && (this.ErrorHandler === obj.ErrorHandler)
                 && (this.Async === obj.Async)
                 && (this.ContentType === obj.ContentType)
                 );
@@ -77,12 +87,15 @@ module MVC {
             this.queue = new Collection<IAjaxRequestItem>();
         }
 
-        public Send(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): IAjaxRequest {
+        public Send(data: any, method: string, async: boolean, contentType: string,
+            handler: (xhr: XMLHttpRequest) => void,
+            errorHandler?: (evt: ErrorEvent, xhr: XMLHttpRequest) => void): IAjaxRequest {
+
             this.EnsureXHR();
 
             this.EnsurePOSTData(data, method);
 
-            this.AddToQueue(data, method, async, contentType, handler);
+            this.AddToQueue(data, method, async, contentType, handler, errorHandler);
 
             if (!this.updating) {
                 this.Start();
@@ -99,8 +112,11 @@ module MVC {
             }
         }
 
-        private AddToQueue(data: any, method: string, async: boolean, contentType: string, handler: (xhr: XMLHttpRequest) => void): void {
-            var item: IAjaxRequestItem = new AjaxRequestItem(data, method, async, contentType, handler);
+        private AddToQueue(data: any, method: string, async: boolean, contentType: string,
+            handler: (xhr: XMLHttpRequest) => void,
+            errorHandler: (evt: ErrorEvent, xhr: XMLHttpRequest) => void): void {
+
+            var item: IAjaxRequestItem = new AjaxRequestItem(data, method, async, contentType, handler, errorHandler);
             if (this.queue.IndexOf(item) < 0) {
                 this.queue.Add(item);
             }
@@ -145,11 +161,20 @@ module MVC {
             this.XHR.onreadystatechange = (ev: Event): any => {
                 if (this.XHR.readyState === XMLHttpRequest.DONE) {
                     this.updating = false;
-                    item.Handler(this.XHR);
+
+                    if (!Args.IsNull(item.Handler)) {
+                        item.Handler(this.XHR);
+                    }
 
                     this.Start();
 
                     this.XHR = null;
+                }
+            };
+
+            this.XHR.onerror = (evt: ErrorEvent): any => {
+                if (!Args.IsNull(item.ErrorHandler)) {
+                    item.ErrorHandler(evt, this.XHR);
                 }
             };
 
@@ -228,6 +253,10 @@ module MVC {
 
         public get Timestamp(): Date {
             return this.timestamp;
+        }
+
+        public get Url(): string {
+            return this.url;
         }
     }
 

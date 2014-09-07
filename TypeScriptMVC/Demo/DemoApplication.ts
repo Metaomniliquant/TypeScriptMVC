@@ -23,8 +23,11 @@ module Demo {
         }
 
         public Application_Start(): void {
-            this.Router.MapPath(new MVC.RouteDefinition("/{controller}/{action}"));
-            this.Router.MapPath(new MVC.RouteDefinition("/{controller}/{action}/{id}"));
+            this.Router.MapPath(new MVC.RouteDefinition("/{controller}/{action}",
+                { controller: "Home", action: "Index" }));
+
+            this.Router.MapPath(new MVC.RouteDefinition("/{controller}/{action}/{id}",
+                { controller: "Home", action: "Index", id: null }));
         }
 
         public Application_Error(): void {

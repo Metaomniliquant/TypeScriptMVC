@@ -14,5 +14,6 @@
     <file>/Testing/Framework/blanket.js</file>
     <file>/Testing/Framework/MockController.js</file>
     <file>/Testing/Framework/MockApplication.js</file>
+    <file>/Testing/Framework/MockViewModel.js</file>
   </files>
 </bundle>
