@@ -4,6 +4,14 @@ module MVC {
     "use strict";
 
     export class DIKeys extends CoreObject {
+        public static AppId(app: string): string {
+            return "MVC_" + app + "_ApplicationIdentifierDIKey";
+        }
+
+        public static ControllerName(app: string, controllerName: string): string {
+            return "MVC_" + app + "_" + controllerName + "_ControllerNameDIKey";
+        }
+
         public static Router(app: string): string {
             return "MVC_" + app + "_RouterDIKey";
         }
@@ -22,6 +30,10 @@ module MVC {
 
         public static ModelBinder(): string {
             return "MVC_IModelBinderDIKey";
+        }
+
+        public static Controller(app: string, name: string): string {
+            return "MVC_" + app + "_" + name + "_ControllerDIKey";
         }
 
         public static Application(app: string): string {

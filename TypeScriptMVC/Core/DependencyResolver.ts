@@ -52,12 +52,30 @@ module MVC {
                 if (Args.IsNull(dep.DependencyKeys)) {
                     return new dep.Value();
                 } else {
-                    var args: Array<any> = this.ParseArgs.apply(this, dep.DependencyKeys);
-                    return new dep.Value.prototype.constructor(args);
+                    var args: Array<any> = this.ParseArgs.call(this, dep.DependencyKeys);
+
+                    var item: any = this.Instantiate(dep.Value, args);
+
+                    return item;
                 }
             }
 
             return dep.Value;
+        }
+
+        private Invoke(fn: Function, self: Object, args: Array<any>): any {
+            return fn.apply(self, args);
+        }
+
+        private Instantiate(Type: Function, args: Array<any>): any {
+            var Constructor: any = function (): any { return; },
+                instance: any, returnedValue: any;
+
+            Constructor.prototype = Type.prototype;
+            instance = new Constructor();
+            returnedValue = this.Invoke(Type, instance, args);
+
+            return typeof returnedValue === "function" || typeof returnedValue === "object" ? returnedValue : instance;
         }
 
         public RegisterInstance(key: string, value: any): IDependencyResolver {
@@ -94,11 +112,16 @@ module MVC {
 
         private ParseArgs(dependencyKeys: Array<string>): Array<any> {
             var values: Array<any> = new Array<any>(),
-                i: number = 0;
+                i: number = 0,
+                key: string = "";
 
             if (!Args.IsNull(dependencyKeys) && dependencyKeys.length > 0) {
                 for (i; i < dependencyKeys.length; i++) {
-                    values[i] = this.GetService<any>(dependencyKeys[i]);
+                    key = dependencyKeys[i];
+
+                    if (!Args.IsNull(key) && key !== "") {
+                        values[i] = this.GetService<any>(dependencyKeys[i]);
+                    }
                 }
 
                 return values;

@@ -43,6 +43,9 @@ module MVC {
 
             var defaultHtml: string = "";
 
+            var key: string = DIKeys.AppId(this.config.UniqueIdentifier);
+            DependencyResolver.Current.RegisterInstance(key, this.config.UniqueIdentifier);
+
             defaultHtml = this.DefaultHtml;
 
             this.root = new View(defaultHtml, undefined);
