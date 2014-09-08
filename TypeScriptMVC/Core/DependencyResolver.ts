@@ -63,21 +63,6 @@ module MVC {
             return dep.Value;
         }
 
-        private Invoke(fn: Function, self: Object, args: Array<any>): any {
-            return fn.apply(self, args);
-        }
-
-        private Instantiate(Type: Function, args: Array<any>): any {
-            var Constructor: any = function (): any { return; },
-                instance: any, returnedValue: any;
-
-            Constructor.prototype = Type.prototype;
-            instance = new Constructor();
-            returnedValue = this.Invoke(Type, instance, args);
-
-            return typeof returnedValue === "function" || typeof returnedValue === "object" ? returnedValue : instance;
-        }
-
         public RegisterInstance(key: string, value: any): IDependencyResolver {
             Args.IsNotNull(key, "key");
             Args.IsNotNull(value, "value");
@@ -108,6 +93,21 @@ module MVC {
             var dep: DependencyDescriptor = new DependencyDescriptor(key, value, dependencyKeys);
 
             DependencyResolverBase.registry.Add(key, dep);
+        }
+
+        private Invoke(fn: Function, self: Object, args: Array<any>): any {
+            return fn.apply(self, args);
+        }
+
+        private Instantiate(Type: Function, args: Array<any>): any {
+            var Constructor: any = function (): any { return; },
+                instance: any, returnedValue: any;
+
+            Constructor.prototype = Type.prototype;
+            instance = new Constructor();
+            returnedValue = this.Invoke(Type, instance, args);
+
+            return typeof returnedValue === "function" || typeof returnedValue === "object" ? returnedValue : instance;
         }
 
         private ParseArgs(dependencyKeys: Array<string>): Array<any> {

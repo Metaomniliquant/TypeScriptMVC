@@ -1,5 +1,6 @@
 ﻿/* tslint:disable:comment-format */
 /* tslint:disable:jsdoc-format */
+/* tslint:disable:use-strict */
 // domain Public by Eric Wendelin http://eriwen.com/ (2008)
 //                  Luke Smith http://lucassmith.name/ (2008)
 //                  Loic Dachary <loic@dachary.org> (2008)
@@ -8,8 +9,6 @@
 //                  Victor Homyakov <victor-homyakov@users.sourceforge.net> (2010)
 
 module MVC {
-    "use strict";
-
     export class StackTrace {
         public constructor(private guess: boolean = true, private ex: Error = null, private browserMode: string = null) {
         }

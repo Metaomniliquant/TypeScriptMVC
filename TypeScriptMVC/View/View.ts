@@ -7,12 +7,14 @@ module MVC {
     export interface IView {
         String: string;
         Html: HTMLElement;
+        UniqueId: string;
         ViewModel: IViewModel;
         Render: (viewContext: IViewContext) => void;
     }
 
     export class ViewBase extends CoreObject implements IView {
         private viewModel: IViewModel;
+        private uniqueId: string;
 
         public constructor(private html: string = null, private element: HTMLElement = null) {
             super();
@@ -35,6 +37,8 @@ module MVC {
                 this.html = html;
                 this.element = element;
             }
+
+            this.uniqueId = Date.now().toString(16);
         }
 
         public get String(): string {
@@ -53,6 +57,10 @@ module MVC {
             this.viewModel = viewModel;
         }
 
+        public get UniqueId(): string {
+            return this.uniqueId;
+        }
+
         private Application(appId: string): IApplication {
             return DependencyResolver.Current.GetService<IApplication>(
                 DIKeys.Application(appId));
@@ -68,6 +76,10 @@ module MVC {
             }
 
             var html: HTMLElement = document.createElement("div");
+            if (!Args.IsNull(html.className)) {
+                html.className += "mvc-view ";
+                html.className += this.uniqueId;
+            }
 
             if (!Args.IsNull(this.element.firstChild) && this.element.firstChild.nodeName.toLowerCase() === "script") {
                 html.innerHTML = this.element.getElementsByTagName("script").item(0).innerHTML;
