@@ -18,6 +18,8 @@ module MVC {
 
             var viewDataStr: string = "",
                 model: any = null,
+                appId: string = "",
+                documentContext: IDocumentContext,
                 app: IApplication = null;
 
             if (!Args.IsNull(viewContext.View) && !Args.IsNull(viewContext.View.ViewModel)) {
@@ -30,10 +32,14 @@ module MVC {
                     model[viewDataStr] = new Object();
                 }
 
-                app = DependencyResolver.Current
-                    .GetService<IApplication>(DIKeys.Application(viewContext.Controller.AppId));
+                appId = viewContext.Controller.AppId;
 
-                document.body.appendChild(app.Root.Html);
+                app = DependencyResolver.Current
+                    .GetService<IApplication>(DIKeys.Application(appId));
+
+                documentContext = DependencyResolver.Current.GetService<IDocumentContext>(DIKeys.DocumentContext(appId));
+
+                documentContext.Document.body.appendChild(app.Root.Html);
 
                 ko.applyBindings(model, app.Root.Html);
             }

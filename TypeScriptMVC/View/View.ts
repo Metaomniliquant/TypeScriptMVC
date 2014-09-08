@@ -15,9 +15,15 @@ module MVC {
     export class ViewBase extends CoreObject implements IView {
         private viewModel: IViewModel;
         private uniqueId: string;
+        private document: Document;
 
         public constructor(private html: string = null, private element: HTMLElement = null) {
             super();
+
+            var documentContext: IDocumentContext = null;
+
+            documentContext = DependencyResolver.Current.GetService<IDocumentContext>(DIKeys.DocumentContext());
+            this.document = documentContext.Document;
 
             if (this.html === null || this.html === "") {
                 if (this.element == null) {
@@ -29,7 +35,7 @@ module MVC {
                     this.html = this.element.innerHTML;
                 }
             } else if (this.element == null) {
-                var elem: HTMLElement = document.createElement("div");
+                var elem: HTMLElement = this.document.createElement("div");
                 elem.innerHTML = this.html;
 
                 this.element = elem;
@@ -75,7 +81,7 @@ module MVC {
                 root.removeChild(root.firstChild);
             }
 
-            var html: HTMLElement = document.createElement("div");
+            var html: HTMLElement = this.document.createElement("div");
             if (!Args.IsNull(html.className)) {
                 html.className += "mvc-view ";
                 html.className += this.uniqueId;
@@ -93,7 +99,12 @@ module MVC {
         }
 
         static EnsureTemplate(url: string): HTMLElement {
-            var i: number = 0;
+            var i: number = 0,
+                documentContext: IDocumentContext = null,
+                document: Document = null;
+
+            documentContext = DependencyResolver.Current.GetService<IDocumentContext>(DIKeys.DocumentContext());
+            document = documentContext.Document;
 
             var scripts: NodeListOf<HTMLScriptElement> = document.getElementsByTagName("script");
             if (scripts.length) {

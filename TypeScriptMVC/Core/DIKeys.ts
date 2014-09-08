@@ -20,6 +20,14 @@ module MVC {
             return "MVC_" + app + "_RequestContextDIKey";
         }
 
+        public static WindowContext(app: string): string {
+            return "MVC_" + app + "_WindowContextDIKey";
+        }
+
+        public static DocumentContext(app?: string): string {
+            return "MVC_" + app + "_DocumentContextDIKey";
+        }
+
         public static ControllerLocator(app: string): string {
             return "MVC_" + app + "_IControllerLocatorDIKey";
         }

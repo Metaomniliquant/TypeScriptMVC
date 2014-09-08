@@ -28,6 +28,7 @@ module MVC {
         Start(): void;
         Error(): void;
         Stop(): void;
+        Initialize(): void;
     }
 
     export interface IUserApplication extends IApplication {
@@ -40,7 +41,8 @@ module MVC {
         private controllers: ICollection<IController>;
         public constructor(private config: IAppConfig) {
             super();
-
+        }
+        public Initialize(): void {
             var defaultHtml: string = "";
 
             var key: string = DIKeys.AppId(this.config.UniqueIdentifier);
@@ -51,8 +53,22 @@ module MVC {
             this.root = new View(defaultHtml, undefined);
             this.root.Html.setAttribute("data-application", this.config.UniqueIdentifier);
         }
+        public RegisterController(controller: IController): IApplication {
+            this.Router.Process(controller);
+
+            return this;
+        }
+        public LocateControllers(): void {
+            this.controllers = this.ControllerLocator.Process(this.AppConfig.UniqueIdentifier);
+        }
         private get DefaultHtml(): string {
-            var result: string = "";
+            var result: string = "",
+                documentContext: IDocumentContext = null,
+                document: Document = null;
+
+            documentContext = DependencyResolver.Current
+                .GetService<IDocumentContext>(DIKeys.DocumentContext(this.AppConfig.UniqueIdentifier));
+            document = documentContext.Document;
 
             var apps: NodeList = document.getElementsByClassName("application"),
                 last: Node = null,
@@ -106,14 +122,6 @@ module MVC {
         public get AppConfig(): IAppConfig {
             return this.config;
         }
-        public RegisterController(controller: IController): IApplication {
-            this.Router.Process(controller);
-
-            return this;
-        }
-        public LocateControllers(): void {
-            this.controllers = this.ControllerLocator.Process(this.AppConfig.UniqueIdentifier);
-        }
         public static Run(application: IApplicationInitializer): void {
             Args.IsNotNull(application, "application");
 
@@ -130,7 +138,10 @@ module MVC {
                         DependencyResolver.Current.GetService<IRouter>(DIKeys.Router(application.AppConfig.UniqueIdentifier)),
                         DependencyResolver.Current.GetService<IRequestContext>(
                             DIKeys.RequestContext(application.AppConfig.UniqueIdentifier))))
-                    .RegisterInstance(DIKeys.Application(application.AppConfig.UniqueIdentifier), application);
+                    .RegisterInstance(DIKeys.Application(application.AppConfig.UniqueIdentifier), application)
+                    .RegisterInstance(DIKeys.DocumentContext(application.AppConfig.UniqueIdentifier), new DocumentContext())
+                    .RegisterInstance(DIKeys.DocumentContext(), new DocumentContext())
+                    .RegisterInstance(DIKeys.WindowContext(application.AppConfig.UniqueIdentifier), new WindowContext());
             }
 
             application.Start();
@@ -140,6 +151,8 @@ module MVC {
     export class Application extends ApplicationBase implements IApplicationInitializer, IUserApplication {
         public Start(): void {
             this.Application_Start();
+
+            this.Initialize();
 
             this.LocateControllers();
 

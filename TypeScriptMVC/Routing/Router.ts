@@ -139,6 +139,12 @@ module MVC {
                 ajax = new MVC.AjaxRequest(url.toLowerCase());
                 ajax.Send(null, "get", false, "text/html", (xhr: XMLHttpRequest): void => {
                     if (!Args.IsNull(xhr) && !Args.IsNull(xhr.responseText) && xhr.status === 200) {
+                        var documentContext: IDocumentContext = null,
+                            document: Document = null;
+
+                        documentContext = DependencyResolver.Current.GetService<IDocumentContext>(DIKeys.DocumentContext());
+                        document = documentContext.Document;
+
                         script = document.createElement("script");
                         script.setAttribute("data-path", ajax.Url);
                         document.body.appendChild(script);
@@ -220,11 +226,15 @@ module MVC {
                 this.EnsureActionMethod(actionMethod, controllerName, actionName);
 
                 if (route.Count > 2) {
+                    // contact/save/?name=Pluto&size=Core
+                    // contact/index/20
                     actionResult = actionMethod.call(controller, route.Get(2));
                 } else {
+                    // home/index
                     actionResult = actionMethod.call(controller);
                 }
             } else {
+                // default
                 actionResult = controller[defaultAction].call(controller);
             }
 

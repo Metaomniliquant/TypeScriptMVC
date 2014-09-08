@@ -170,4 +170,13 @@ module MVC {
             return (0,eval)(that);
         }
     }
+
+    export class DefaultDocument extends CoreObject {
+        public static Get(): Document {
+            var win: Window;
+            win = DefaultWindow.Get();
+
+            return win.document;
+        }
+    }
 }

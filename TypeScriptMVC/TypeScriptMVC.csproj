@@ -53,6 +53,7 @@
     <TypeScriptCompile Include="Application.ts" />
     <TypeScriptCompile Include="Binding\ModelBinder.ts" />
     <TypeScriptCompile Include="Context\ControllerContext.ts" />
+    <TypeScriptCompile Include="Context\DocumentContext.ts" />
     <TypeScriptCompile Include="Context\RequestContext.ts" />
     <TypeScriptCompile Include="Context\ViewContext.ts" />
     <TypeScriptCompile Include="Context\WindowContext.ts" />
@@ -73,6 +74,7 @@
     <TypeScriptCompile Include="Demo\ViewModels\NameDescriptionViewModel.ts" />
     <TypeScriptCompile Include="Demo\Views\BaseView.ts" />
     <TypeScriptCompile Include="Results\ActionResult.ts" />
+    <TypeScriptCompile Include="Results\PostResult.ts" />
     <TypeScriptCompile Include="Results\ViewResult.ts" />
     <TypeScriptCompile Include="Routing\ControllerLocator.ts" />
     <TypeScriptCompile Include="Routing\ControllerRegistry.ts" />
@@ -136,11 +138,12 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptSourceMap>False</TypeScriptSourceMap>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
